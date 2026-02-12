@@ -112,3 +112,37 @@ impl Flags {
         (self.0 & 0b01000000) != 0
     }
 }
+#[derive(Debug, Clone)]
+pub struct Packet{
+    pub version: u8 // maybe i will use a wrapper later if we add anything else which is also if type u8
+    
+    pub session_id: SessionId, // session identifier
+    
+    pub intent: Intent, // what this packet wants to do
+    
+    pub priority: Priority, // some might have less priority so we dont always have to hash them 
+
+    pub flags: Flags,
+
+    pub sequence: Sequence, // for reordering and duplicate detection
+
+    pub timestamp: u64, // timestamp of when this was created to hash and also to see if its a replay attack or any old session
+
+    pub payload: Vec<u8> // the actual data that the packet holds
+
+    pub hash: [u8; 32]
+}
+impl Packet {
+    pub fn new(session_id: SessionId, intent: Intent, payload: Vec<u8>) -> Self {
+        let mut flags = Flags::new();
+        flags.set_compression(Compression::Lz4);
+        flags.set_encryption(EncryptionLevel::ChaCha20);
+        let mut packet=Packet{
+            version:FDP_Version,
+            session_id,
+            intent,
+            priority: Priority::Normal,
+            flags,
+        }   
+    }
+}
