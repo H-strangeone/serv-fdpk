@@ -87,7 +87,8 @@ pub enum Intent {
 impl Intent {
     /// Convert a byte to an Intent
     /// Returns None if the byte doesn't match any known Intent
-    pub fn from_u8(byte: u8) -> Option<Self> {
+    pub fn from_u8(byte: u8) -> Option<Self> 
+    {
         match byte {
             0x01 => Some(Intent::Ping),
             0x02 => Some(Intent::Pong),
